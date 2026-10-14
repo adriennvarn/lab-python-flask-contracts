@@ -9,24 +9,16 @@ app = Flask(__name__)
 
 @app.route("/contract/<int:id>")
 def contract(id):
-    contract_information = None
-    for contract in contracts:
-        if contract["id"] == id:
-            contract_information = contract["contract_information"]
-    
-    if contract_information:
-        return make_response(contract_information, 200, {})
+    contract = next((contract["contract_information"] for contract in contracts
+                     if contract["id"] == id), None)
+    if contract:
+        return make_response(contract, 200, {})
     else:
         return make_response("Contract not found", 404)
     
 @app.route("/customer/<string:customer_name>")
-def customer(customer_name):
-    customer = None
-    for name in customers:
-        if name == customer_name:
-             customer = name    
-    
-    if customer:
+def customer(customer_name):    
+    if customer_name in customers:
         return make_response("", 204)
     else:
         return make_response("Customer not found", 404)
